@@ -4,6 +4,7 @@
 #include "image_encryption.h"
 #include "bit_field_filter.h"
 #include "image_encryption.h"
+
 int main(){
     string process="y";
     string file;
@@ -32,7 +33,7 @@ int main(){
       cout<<endl<<"Choose a picture for Gray Image Processing :";
       getline(cin,file);
       Image* img=new GrayImage();
-      loadcase(img,file);
+      loadcase(img,file);  
       cout<<endl<<"***** Gray Image Processing *****"<<endl<<endl;
     }
     if(option=="2")
@@ -48,7 +49,7 @@ int main(){
       getline(cin,file);
       Image* img=new RGBImage();
       loadcase(img,file);
-      cout<<endl<<"***** RGB Image Processing *****"<<endl;
+      cout<<endl<<"***** RGB Image Processing *****"<<endl<<endl;
     }
     if(option=="3")
     {
@@ -66,15 +67,13 @@ int main(){
       getline(cin,message);
       cout<<"Start encrypting ...... "<<endl;
       ImageEncryption test(file);
-      Image* img=new RGBImage;
-      img=test.encryption(message);
+      Image* img=test.encryption(message);
       cout<<"Encrypted picture : "<<endl;
       img->Display_X_Server();
       file=file.substr(0,file.length()-4);
       file+="_encrypted.png";
       img->DumpImage("DumpedImage/"+file);
       cout<<"The picture has been dumped as : "<<file<<"_encrpypted.png at DumpedImage folder. "<<endl;
-      delete img;
       cout<<"End of encryption."<<endl;
       cout<<endl<<"***** Image Encryption *****"<<endl<<endl;
     }
@@ -92,11 +91,10 @@ int main(){
       cout<<"The encrypted picture : "<<file<<endl;
       ImageEncryption test;
       cout<<"Start decrypting ...... "<<endl;
-      RGBImage*  img=new RGBImage;
+      RGBImage*  img=new RGBImage();
       img->LoadImage("DumpedImage/"+file);
       cout<<"The hidden message : ";
       cout<<test.decryption(img)<<endl;
-      delete img;
       cout<<"End of decryption."<<endl;
       cout<<endl<<"***** Image Decryption *****"<<endl<<endl;
     }

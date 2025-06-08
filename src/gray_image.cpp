@@ -81,10 +81,7 @@ Image* GrayImage::mosaic(int block){
       for(int p=0;p<hbottom;p++)
       {
          for(int q=0;q<wbottom;q++)
-         {
-           for(int c=0;c<3;c++)
              sum=sum+pixels[i+p][j+q];
-         }
       }
       int value;
         value=sum/(hbottom*wbottom);
@@ -258,7 +255,79 @@ Image* GrayImage::fisheye(float k){
   }
   return new GrayImage(iwidth,iheight,temp);
 }
-
-
-
-
+Image* GrayImage::invert(){
+  int**temp=new int*[iheight];
+  for(int i=0;i<iheight;i++)
+  {
+    temp[i]=new int[iwidth];
+    for(int j=0;j<iwidth;j++)
+      temp[i][j]=255-pixels[i][j];
+  }
+  return new GrayImage(iwidth,iheight,temp);
+}
+Image* GrayImage::emboss(){
+  int k[3][3]={{-2,-1,0},{-1,1,1},{0,1,2}};
+  int**temp=new int*[iheight];
+  for(int i=0;i<iheight;i++)
+    temp[i]=new int[iwidth];
+  for(int i=0;i<iheight;i++)
+  {
+    for(int j=0;j<iwidth;j++)
+    {
+      int t=0;
+      for(int ki=-1;ki<=1;ki++)
+      {
+        for(int kj=-1;kj<=1;kj++)
+        {
+          int ii=i+ki;
+          int jj=j+kj;
+          if(ii<0)
+            ii=0;
+          if(ii>=iheight)
+            ii=iheight-1;
+          if(jj<0)
+            jj=0;
+          if(jj>=iwidth)
+            jj=iwidth-1;
+            
+          t=t+k[ki+1][kj+1]*pixels[ii][jj];
+        }
+      }
+        temp[i][j]=t+128;
+    }
+  }
+  return new GrayImage(iwidth,iheight,temp);
+}
+Image* GrayImage::oilpainting(int r){
+  int**temp=new int*[iheight];
+  for(int i=0;i<iheight;i++)
+    temp[i]=new int[iwidth];
+  for(int i=0;i<iheight;i++)
+  {
+    for(int j=0;j<iwidth;j++)
+    {
+      int times[256]{0};
+      for(int ki=-r;ki<=r;ki++)
+      {
+        for(int kj=-r;kj<=r;kj++)
+        {
+          int ii=i+ki;
+          int jj=j+kj;
+          if((ii>=0)&&(ii<iheight)&&(jj>=0)&&(jj<iwidth))
+            times[pixels[ii][jj]]++;//accumulate the number of grayness(0-255) appear in square r*r
+        }
+      }
+      int maxt=times[0],maxindex=0;
+      for(int k=0;k<256;k++)
+      {
+        if(times[k]>maxt)
+        {
+          maxindex=k;
+          maxt=times[maxindex];
+        }
+      }
+      temp[i][j]=maxindex;//let the pixels be the one that appears the most
+    }
+  }
+  return new GrayImage(iwidth,iheight,temp);
+}

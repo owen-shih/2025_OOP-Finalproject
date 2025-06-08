@@ -12,7 +12,7 @@ void loadcase(Image* img,string file){
   getline(cin,ans);
   if(ans=="y")
     img->Display_ASCII();
-  cout<<"Case 1 : horizontal"<<endl<<"Case 2 : mosaic"<<endl<<"Case 3 : gaussian"<<endl<<"Case 4 : laplacain"<<endl<<"Case 5 : fisheye"<<endl;
+  cout<<"Case 1 : horizontal"<<endl<<"Case 2 : mosaic"<<endl<<"Case 3 : gaussian"<<endl<<"Case 4 : laplacain"<<endl<<"Case 5 : fisheye"<<endl<<"Case 6 : invert"<<endl<<"Case 7 : emboss"<<endl<<"Case 8 : oil-painting"<<endl<<endl;
   cout<<"Enter the filter : ";
   string op;
   getline(cin,op);
@@ -30,6 +30,9 @@ void loadcase(Image* img,string file){
         case 3: option = option | case_three; break;
         case 4: option = option | case_four;  break;
         case 5: option = option | case_five;  break;
+        case 6: option = option | case_six;   break;
+        case 7: option = option | case_seven; break;
+        case 8: option = option | case_eight; break;
     }
   }
   if(option & case_one)
@@ -42,6 +45,12 @@ void loadcase(Image* img,string file){
     cout<<"Case 4 detected"<<endl;
   if(option & case_five)
     cout<<"Case 5 detected"<<endl;
+  if(option & case_six)
+    cout<<"Case 6 detected"<<endl;
+  if(option & case_seven)
+    cout<<"Case 7 detected"<<endl;
+  if(option & case_eight)
+    cout<<"Case 8 detected"<<endl;
   filter(img,option,file);
   
 }
@@ -159,6 +168,69 @@ void filter(Image* img,int8_t option,string filename){
       string sub=filename.substr(filename.length()-4,4);
       filename=filename.substr(0,filename.length()-4);
       filename+="_fisheye"+sub;
+      img->DumpImage("DumpedImage/"+filename);
+    }
+  }
+  if(option&case_six)
+  {
+    cout<<"Processing invert......"<<endl;
+    temp=img->invert();
+    delete img;
+    img=temp;
+    img->Display_X_Server();
+    cout<<"Do you want to dump the image?(y/n) : ";
+    string ans;
+    getline(cin,ans);
+    if(ans=="y")
+    {
+      string sub=filename.substr(filename.length()-4,4);
+      filename=filename.substr(0,filename.length()-4);
+      filename+="_invert"+sub;
+      img->DumpImage("DumpedImage/"+filename);
+    }
+  }
+  if(option&case_seven)
+  {
+    cout<<"Processing emboss......"<<endl;
+    temp=img->emboss();
+    delete img;
+    img=temp;
+    img->Display_X_Server();
+    cout<<"Do you want to dump the image?(y/n) : ";
+    string ans;
+    getline(cin,ans);
+    if(ans=="y")
+    {
+      string sub=filename.substr(filename.length()-4,4);
+      filename=filename.substr(0,filename.length()-4);
+      filename+="_emboss"+sub;
+      img->DumpImage("DumpedImage/"+filename);
+    }
+  }
+  if(option&case_eight)
+  {
+    cout<<"Processing oil-painting......"<<endl;
+    cout<<"Enter the effect : ";
+    string t;
+    getline(cin,t);
+    if(t=="")
+      temp=img->oilpainting();
+    else
+    {
+    int k=stof(t);
+    temp=img->oilpainting(k);
+    }
+    delete img;
+    img=temp;
+    img->Display_X_Server();
+    cout<<"Do you want to dump the image?(y/n) : ";
+    string ans;
+    getline(cin,ans);
+    if(ans=="y")
+    {
+      string sub=filename.substr(filename.length()-4,4);
+      filename=filename.substr(0,filename.length()-4);
+      filename+="_oil-painting"+sub;
       img->DumpImage("DumpedImage/"+filename);
     }
   }

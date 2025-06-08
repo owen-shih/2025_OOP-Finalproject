@@ -50,12 +50,10 @@ void RGBImage::Display_ASCII(){
 }
 void RGBImage::Display_CMD(){;}
 int RGBImage::getdata(int w,int h,int c){
-  //cout<<pixels[w][h][c];
   return pixels[w][h][c];
 }
 void RGBImage::modifydata(int w,int h,int c,int d){
   pixels[w][h][c]=d;
- // cout<<pixels[w][h][c];
 }
 Image* RGBImage::horizontalflip(){
   //create an 3D array for modify
@@ -79,9 +77,6 @@ Image* RGBImage::horizontalflip(){
         swap(temp[i][j][k],temp[i][t][k]);
     }
   }
-  /*RGBImage test(iwidth,iheight,temp);
-  test.Display_X_Server();
-  test.DumpImage("test_rgb_horizontalflip.jpg");*/
   return new RGBImage(iwidth,iheight,temp);
 }
 Image* RGBImage::mosaic(int block){
@@ -319,7 +314,115 @@ Image* RGBImage::fisheye(float k){
   }
   return new RGBImage(iwidth,iheight,temp);
 }
-
-
-
-
+Image* RGBImage::invert(){
+  int***temp=new int**[iheight];
+  for(int i=0;i<iheight;i++)
+  {
+    temp[i]=new int*[iwidth];
+    for(int j=0;j<iwidth;j++)
+    {
+      temp[i][j]=new int[3];
+      for(int c=0;c<3;c++)
+        temp[i][j][c]=255-pixels[i][j][c];
+    }
+  }
+  return new RGBImage(iwidth,iheight,temp);
+}
+Image* RGBImage::emboss(){
+  int k[3][3]={{-2,-1,0},{-1,1,1},{0,1,2}};
+  int***temp=new int**[iheight];
+  for(int i=0;i<iheight;i++)
+  {
+    temp[i]=new int*[iwidth];
+    for(int j=0;j<iwidth;j++)
+    {
+      temp[i][j]=new int[3];
+    }
+  }
+  for(int i=0;i<iheight;i++)
+  {
+    for(int j=0;j<iwidth;j++)
+    {
+      int t[3]{0};
+      for(int ki=-1;ki<=1;ki++)
+      {
+        for(int kj=-1;kj<=1;kj++)
+        {
+          int ii=i+ki;
+          int jj=j+kj;
+          if(ii<0)
+            ii=0;
+          if(ii>=iheight)
+            ii=iheight-1;
+          if(jj<0)
+            jj=0;
+          if(jj>=iwidth)
+            jj=iwidth-1;
+          for(int c=0;c<3;c++)
+            t[c]=t[c]+k[ki+1][kj+1]*pixels[ii][jj][c];
+        }
+      }
+      for(int c=0;c<3;c++)
+        temp[i][j][c]=t[c]+128;
+    }
+  }
+  return new RGBImage(iwidth,iheight,temp);
+}
+Image* RGBImage::oilpainting(int r){
+  int***temp=new int**[iheight];
+  for(int i=0;i<iheight;i++)
+  {
+    temp[i]=new int*[iwidth];
+    for(int j=0;j<iwidth;j++)
+    {
+      temp[i][j]=new int[3];
+    }
+  }
+  for(int i=0;i<iheight;i++)
+  {
+    for(int j=0;j<iwidth;j++)
+    {
+      int times[3][256]={0};
+      for(int ki=-r;ki<=r;ki++)
+      {
+        for(int kj=-r;kj<=r;kj++)
+        {
+          int ii=i+ki;
+          int jj=j+kj;
+          if((ii>=0)&&(ii<iheight)&&(jj>=0)&&(jj<iwidth))
+          {
+            for(int c=0;c<3;c++)
+              times[c][pixels[ii][jj][c]]++;//accumulate the number of r,g,bness(0-255) appear in square r*r
+          }
+        }
+      }
+      int maxt[3];
+      maxt[0]=times[0][0];
+      maxt[1]=times[1][0];
+      maxt[2]=times[2][0];
+      int maxindex[3]{0};
+      for(int k=0;k<256;k++)
+      {
+        if(times[0][k]>maxt[0])
+        {
+          maxindex[0]=k;
+          maxt[0]=times[0][k];
+        }
+        if(times[1][k]>maxt[1])
+        {
+          maxindex[1]=k;
+          maxt[1]=times[1][k];
+        }
+        if(times[2][k]>maxt[2])
+        {
+          maxindex[2]=k;
+          maxt[2]=times[2][k];
+        }
+      }
+      temp[i][j][0]=maxindex[0];//let the pixels be the one that appears the most
+      temp[i][j][1]=maxindex[1];
+      temp[i][j][2]=maxindex[2];
+    }
+  }
+  return new RGBImage(iwidth,iheight,temp);
+}
