@@ -1,5 +1,5 @@
 #include "data_loader.h"
-
+bool enable=true;
 Data_Loader::Data_Loader(){
     ;
 }
@@ -151,6 +151,7 @@ void Data_Loader::Dump_RGB(int w, int h, int ***pixels, string filename){
 }
 
 void Data_Loader::Display_Gray_X_Server(int w, int h, int **pixels){
+    if(enable){
     assert(pixels != nullptr && w > 0 && h > 0);
     // Create a grayscale image using CImg
     CImg<unsigned char> grayscale_img(w, h, 1); // 1 channel for grayscale
@@ -167,9 +168,11 @@ void Data_Loader::Display_Gray_X_Server(int w, int h, int **pixels){
     while (!disp.is_closed()) {
         disp.wait();
     }
+    }
 }
 
 void Data_Loader::Display_RGB_X_Server(int w, int h, int ***pixels){
+    if(enable){
     assert(pixels != nullptr && w > 0 && h > 0);
     // Create a CImg object for the RGB image
     CImg<unsigned char> rgb_img(w, h, 1, 3); // 3 channels for RGB
@@ -187,6 +190,7 @@ void Data_Loader::Display_RGB_X_Server(int w, int h, int ***pixels){
     CImgDisplay disp(rgb_img, "Loaded Image");
     while (!disp.is_closed()) {
         disp.wait();
+    }
     }
 }
 

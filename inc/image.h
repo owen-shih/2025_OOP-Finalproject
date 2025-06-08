@@ -24,6 +24,9 @@ public:
   virtual Image* laplacian(int d=0)=0;
   virtual Image* Gaussian(double sigma=10,int k=2)=0;
   virtual Image* fisheye(float k=0.5)=0;
+  virtual Image* invert()=0;
+  virtual Image* emboss()=0;
+  virtual Image* oilpainting(int r=3)=0;
   int get_width();
   int get_height();
 

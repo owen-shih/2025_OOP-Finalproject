@@ -21,6 +21,9 @@ public:
   Image* Gaussian(double sigma=10,int k=2);
   Image* laplacian(int d=0);
   Image* fisheye(float k=0.5);
+  Image* invert();
+  Image* emboss();
+  Image* oilpainting(int r=3);
   int getdata(int w,int h);
   void modifydata(int w,int h,int d);
 };

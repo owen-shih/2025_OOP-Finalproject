@@ -96,7 +96,6 @@ string ImageEncryption::decryption(RGBImage* encrypt){
     for(int i=0;i<8;i++)
       temp=(temp<<1) | bits[z+i];
     char ch=temp;
-    cout<<ch;
     message+=ch;
   }
   return message;
