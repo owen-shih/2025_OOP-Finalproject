@@ -74,7 +74,7 @@ Image* RGBImage::horizontalflip(){
     {
       int t=iwidth-j-1;
       for(int k=0;k<3;k++)
-        swap(temp[i][j][k],temp[i][t][k]);
+        swap(temp[i][j][k],temp[i][t][k]);//swap symmetrically
     }
   }
   return new RGBImage(iwidth,iheight,temp);
@@ -91,9 +91,9 @@ Image* RGBImage::mosaic(int block){
     }
   }
   
-  for(int i=0;i<iheight;i=i+block)
+  for(int i=0;i<iheight;i=i+block)//sqaure => +block
   {
-    for(int j=0;j<iwidth;j=j+block)
+    for(int j=0;j<iwidth;j=j+block)//sqaure =>+block
     {
       int sum[3]{};
       int hbottom=min(block,iheight-i); //when it comes to edge,that the
@@ -110,8 +110,8 @@ Image* RGBImage::mosaic(int block){
       }
       int value[3];
       for(int c=0;c<3;c++)
-        value[c]=sum[c]/(hbottom*wbottom);
-      for(int p=0;p<hbottom;p++)
+        value[c]=sum[c]/(hbottom*wbottom);//average value
+      for(int p=0;p<hbottom;p++)//fill the square
       {
         for(int q=0;q<wbottom;q++)
         {
@@ -140,13 +140,13 @@ Image* RGBImage::Gaussian(double sigma,int k){
     for(int gj=-k;gj<=k;gj++)
     {
       G[gi+k][gj+k]=(1.0/2.0*M_PI*sigma*sigma)*exp(-1*(gi*gi+gj*gj)/(sigma*sigma));
-      sum=sum+G[gi+k][gj+k];
+      sum=sum+G[gi+k][gj+k];//use the formula to obtain matirx G
     }
   }
   for(int gi=-k;gi<=k;gi++)
   {
     for(int gj=-k;gj<=k;gj++)
-      G[gi+k][gj+k]=G[gi+k][gj+k]/sum;
+      G[gi+k][gj+k]=G[gi+k][gj+k]/sum;//avoid over exposure
   }
   for(int i=0;i<iheight;i++)
   {
@@ -157,7 +157,7 @@ Image* RGBImage::Gaussian(double sigma,int k){
       {
         for(int gj=-k;gj<=k;gj++)
         {
-          int ii=i+gi,jj=j+gj;
+          int ii=i+gi,jj=j+gj;//check boundery
           if(ii<0)
             ii=0;
           if(ii>=iheight)
@@ -167,7 +167,7 @@ Image* RGBImage::Gaussian(double sigma,int k){
           if(jj>=iwidth) 
             jj=iwidth-1;
           for(int c=0;c<3;c++)
-            t[c]=t[c]+G[gi+k][gj+k]*pixels[ii][jj][c];
+            t[c]=t[c]+G[gi+k][gj+k]*pixels[ii][jj][c];//convoluton
         }  
       }
       for(int c=0;c<3;c++)
