@@ -36,12 +36,11 @@ RGBImage* ImageEncryption::encryption(const string& input){
   {
     for(int j=0;j<(en->get_width())&&k<bits.size();j++)
     {
-      
       for(int c=0;c<3&&k<bits.size();c++)
       {
         uint8_t rgbbits=static_cast<uint8_t>(en->getdata(i,j,c));
         //change LSB:
-        //0xFE=1111 1110? ,& operation let lsb become 0
+        //0xFE=1111 1110 & operation let lsb become 0
         // | operation write the bits into the lsb position
         rgbbits=(rgbbits & 0xFE) | bits[k];
         en->modifydata(i,j,c,static_cast<int>(rgbbits));
